@@ -1,37 +1,23 @@
 #!/usr/bin/env python3
 
 import os
+from functools import partial
 from pulpit import *
+
 
 def asset(filename):
     return os.path.join(os.path.splitext(__file__)[0] + ".assets", filename)
 
+
+def flash_mathtext(lstrings, flash_index, scene):
+    tex = MathTex(*lstrings)
+    scene.add(tex)
+    scene.play(Flash(tex[flash_index]))
+    scene.wait()
+
+
 pills = ImageMobject(asset("pills.jpg"))
 pills.scale(0.5)
-animated_numbers = MathTex(r"flashing(1...2...3...)")
-flashing_plus = MathTex(r"5 flash(+) 2")
-flashing_minus = MathTex(r"8 flash(-) 7")
-bare_integral = MathTex(r"\int")
-
-add_apples = MathTex(r"apple + apple")
-subtract_apples = MathTex(r"apple - apple")
-
-
-def negative_three_animation(scene):
-    neg3 = MathTex(r"-", r"3")
-    scene.add(neg3)
-    neg3[0].set_color(RED)
-    scene.play(Flash(neg3[0]))
-    scene.wait()
-
-
-def negative_three_animation_x(scene):
-    neg3 = MathTex(r"-", r"3")
-    scene.add(neg3)
-    neg3[1].set_color(RED)
-    scene.play(Flash(neg3[1]))
-    scene.wait()
-
 
 lecture = [
     SubChunk("""What are negative numbers?"""),
@@ -51,12 +37,12 @@ lecture = [
     SubChunk(
         """That hoizontal stroke you see to the left of a number is a symbol. It has
        meaning.""",
-        actions=[negative_three_animation],
+        actions=[partial(flash_mathtext, ["-", "3"], 0)],
     ),
     SubChunk(
         """Just as the symbol you see on the right has meaning: it's a
        number.""",
-        actions=[negative_three_animation_x],
+        actions=[partial(flash_mathtext, ["-", "3"], 1)],
     ),
     # SubChunk("""But maybe you got so used to seeing these symobols that you lost
     #    your appriciation for their real meaning. What is three? Give it a
