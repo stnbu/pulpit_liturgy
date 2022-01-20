@@ -20,28 +20,28 @@ pills = ImageMobject(asset("pills.jpg"))
 pills.scale(0.5)
 
 lecture = [
-    SubChunk("""What are negative numbers?"""),
+    SubChunk("What are negative numbers?"),
     SubChunk(
-        """You likely learned about negative numbers long ago. Maybe they have lost
-       their mystery for you."""
+        "You likely learned about negative numbers long ago. Maybe they have lost\n",
+        "their mystery for you.",
     ),
     SubChunk(
-        """But what if I told you there's more here than you think. There are even
-       some hints about what professional mathematitions actually do in something
-       as mundane as negative numbers.""",
+        "But what if I told you there's more here than you think. There are even\n",
+        "some hints about what professional mathematitions actually do in something\n",
+        "as mundane as negative numbers.",
         actions=[
             lambda scene: scene.play(FadeIn(pills), run_time=3),
             lambda scene: scene.play(FadeOut(pills), run_time=3),
         ],
     ),
     SubChunk(
-        """That hoizontal stroke you see to the left of a number is a symbol. It has
-       meaning.""",
+        "That hoizontal stroke you see to the left of a number is a symbol. It has\n"
+        "meaning.",
         actions=[partial(flash_mathtext, ["-", "3"], 0)],
     ),
     SubChunk(
-        """Just as the symbol you see on the right has meaning: it's a
-       number.""",
+        "Just as the symbol you see on the right has meaning: it's a\n",
+        "number.",
         actions=[partial(flash_mathtext, ["-", "3"], 1)],
     ),
     # SubChunk("""But maybe you got so used to seeing these symobols that you lost
@@ -97,6 +97,7 @@ lecture = [
     # lambda scene: scene.add(subtract_apples),
 ]
 
+config.quality = "low_quality"
 scene = Scene()
 player = Player(scene, lecture, local_tts)
 player.play()
