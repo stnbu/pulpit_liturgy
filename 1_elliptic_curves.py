@@ -27,29 +27,24 @@ class EC(Scene):
         )
         self.add(plane, graph)
         point = G
-        paracounter = 10
-        while paracounter > 0:
+        while True:
             point = point + G
             x = 0 if point.x is None else point.x.value
             y = 0 if point.y is None else point.y.value
-            color = RED
-            radius = 0.1
-            FACTOR = 0.1
-            if x == 100:
-                color = GREEN
-                radius = 0.3
-
+            # wat
+            FACTOR = 1
             x = FACTOR * x
             y = FACTOR * y
-
-            dot = Dot(plane.coords_to_point(x, y), radius=0.1, color=color)
-            self.play(Flash(dot, run_time=0.25))
+            # end wat
+            dot = Tex("%d,%d" % (x, y), radius=0.2, color=RED)
+            #self.play(Flash(dot, run_time=0.25))
+            self.add(dot)
             if point == I:
-                paracounter -= 1
+                break
 
 
 if __name__ == "__main__":
-    config.frame_height = 8 * 3
+    config.frame_height = 8 * 7
     config.frame_width = config.frame_height * config.aspect_ratio
     config.quality = "low_quality"
     scene = EC()
