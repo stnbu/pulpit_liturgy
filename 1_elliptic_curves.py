@@ -17,13 +17,13 @@ G = ECPoint(x=3, y=6, curve=galois101)
 N = 12
 assert N * G == I
 
+
 class EC(Scene):
     def construct(self):
         extent = 25
         plane = NumberPlane((-extent, extent), (-extent, extent)).add_coordinates()
         graph = ImplicitFunction(
-            lambda x, y: x**3 + 2*x + 3 - y**2,
-            color=GREEN
+            lambda x, y: x ** 3 + (A * x) + B - y ** 2, color=GREEN
         )
         self.add(plane, graph)
         point = G
@@ -46,6 +46,7 @@ class EC(Scene):
             self.play(Flash(dot, run_time=0.25))
             if point == I:
                 paracounter -= 1
+
 
 if __name__ == "__main__":
     config.frame_height = 8 * 3
