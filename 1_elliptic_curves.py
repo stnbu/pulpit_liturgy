@@ -50,11 +50,11 @@ class EC(Scene):
 
         points = []
         modulus = Decimal(P)
-        for i, n in enumerate(astoroid.fdrange(0, 102, 0.1)):
+        for i, n in enumerate(astoroid.fdrange(-1, 1000, 0.1)):
             points.append((n, get_top_half(n)))
         modular_points = [[astoroid.ModularNumber(Decimal(n), modulus) for n in point] for point in points]
         dotpacity = 0.5
-        for line in astoroid.get_lines(modular_points):
+        for i, line in enumerate(astoroid.get_lines(modular_points)):
             modular_porabola = VGroup(color=astoroid.get_ith_color(i))
             modular_porabola.set_points_as_corners([astoroid.to_xyz(l) for l in line])
             self.add(modular_porabola)
