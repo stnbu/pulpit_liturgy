@@ -17,57 +17,66 @@ G = ECPoint(x=3, y=6, curve=galois101)
 N = 12
 assert N * G == I
 
+extent = 102
 
+import math
+def get_top_half(x):
+    return math.sqrt((x) ** 3 + (A * (x)) + B)
+
+#(y) ** 2,
+from decimal import Decimal
+def get_curve_graph(passing_through=None):
+    dx = 0
+    dy = 0
+    if passing_through is not None:
+        dx, dy = passing_through
+    dy = 0
+    return ImplicitFunction(
+        #lambda x, y: (x-dx) ** 3 + (A * (x-dx)) + B - (y-dy) ** 2,
+        x_range=[-extent, extent],
+        y_range=[-extent, extent],
+        stroke_width=10,
+        color=GREEN
+    )
+
+import astoroid
 class EC(Scene):
     def construct(self):
-        extent = 102
-        plane = NumberPlane((-extent, extent), (-extent, extent)).add_coordinates()
-        #lambda x, y: ((x ** 3 + (A * x) + B) % P) - ((y ** 2) % P), color=GREEN
-        graph = ImplicitFunction(
-            lambda x, y: x ** 3 + (A * x) + B - y ** 2, color=GREEN
+        plane = NumberPlane(
+            [-extent, extent, 10],
+            [-extent, extent, 10],
         )
-        self.add(plane, graph)
-        colors = [BLUE, GREEN, RED, ORANGE]
-        for x, y in [
-                (0, 0),
-                (1, 0),
-                (1, 1),
-                (0, 1),
-                (-1, 1),
-                (-1, 0),
-                (-1, -1),
-                (0, -1),
-                (1, -1),
-        ]:
-            for n in range(1, 5):
-                mx, my = x * n, y * n
-                print(mx, my)
-                dot = Tex("%d,%d" % (mx, my), color=colors[n - 1]).move_to(plane.coords_to_point(mx, my)).scale(0.5)
-                self.add(dot)
-        dot = Tex("<%d,%d>" % (13, 7), color=RED).move_to(plane.coords_to_point(13, 7)).scale(1.5)
-        self.add(dot)
+        self.add(plane)
+
+        points = []
+        modulus = Decimal(P)
+        for i, n in enumerate(astoroid.fdrange(0, 102, 0.1)):
+            points.append((n, get_top_half(n)))
+        modular_points = [[astoroid.ModularNumber(Decimal(n), modulus) for n in point] for point in points]
+        dotpacity = 0.5
+        for line in astoroid.get_lines(modular_points):
+            modular_porabola = VGroup(color=astoroid.get_ith_color(i))
+            modular_porabola.set_points_as_corners([astoroid.to_xyz(l) for l in line])
+            self.add(modular_porabola)
+        # end stuff
+
         return
         point = G
         while True:
-            point = point + G
             x = 0 if point.x is None else point.x.value
             y = 0 if point.y is None else point.y.value
-            # wat
-            FACTOR = 0.1
-            tx = FACTOR * x
-            ty = FACTOR * y
-            # end wat
-            dot = Tex("%d,%d" % (x, y), color=RED).move_to(plane.coords_to_point(tx, ty))
-            #dot2 = Tex("%d,%d" % (x, y), color=BLUE).scale(2)
-            #dot3 = Tex("%d,%d" % (x, y), color=GREEN).next_to(dot2, DOWN).scale(0.5)
-            #self.play(Flash(dot, run_time=0.25))
-            self.add(dot)
+            #print("Circle(radius=0.2, color=RED, fill_opacity=1).move_to(plane.coords_to_point(%d, %d))" % (x,y))
+            dot = Circle(radius=0.2, color=RED, fill_opacity=1).move_to(plane.coords_to_point(x, y))
+            self.add(dot, get_curve_graph([x, y]))
+            point = point + G
             if point == I:
                 break
 
+        self.add(Circle(radius=0.6, color=BLUE, fill_opacity=1).move_to(plane.coords_to_point(30, 55)))
+        self.add(Circle(radius=0.6, color=BLUE, fill_opacity=1).move_to(plane.coords_to_point(5, 21)))
 
 if __name__ == "__main__":
-    config.frame_height = 8 * 2
+    config.frame_height = 8 * 3 * 5
     config.frame_width = config.frame_height * config.aspect_ratio
     #config.quality = "low_quality"
     scene = EC()
