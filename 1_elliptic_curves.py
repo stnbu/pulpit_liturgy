@@ -23,6 +23,13 @@ import math
 def get_top_half(x):
     return math.sqrt((x) ** 3 + (A * (x)) + B)
 
+"""
+0 = x**3 + (2 * (x)) + 2
+-2 = x**3 + (2 * (x))
+-2 - (2*x) = x**3
+
+"""
+
 #(y) ** 2,
 from decimal import Decimal
 def get_curve_graph(passing_through=None):
@@ -45,17 +52,25 @@ class EC(Scene):
         plane = NumberPlane(
             [-extent, extent, 1],
             [-extent, extent, 1],
+            x_length=extent + 1,
+            y_length=extent + 1,
         )
         self.add(plane)
 
         points = []
         modulus = Decimal(P)
-        for i, n in enumerate(astoroid.fdrange(0, 150, 0.1)):
+        for i, n in enumerate(astoroid.fdrange(-0.77, 50, 0.01)):
             points.append((n, get_top_half(n)))
         modular_points = [[astoroid.ModularNumber(Decimal(n), modulus) for n in point] for point in points]
         dotpacity = 0.5
-        for j, line in enumerate(astoroid.get_lines(modular_points)):
-            modular_porabola = VGroup(color=astoroid.get_ith_color(j), stroke_width=0.3)
+        lines = astoroid.get_lines(modular_points)
+        #colors = list(astoroid.gen_color_gradient((255, 0, 0), (0, 0, 255), len(lines)))
+        colors = list(reversed(astoroid.adams_spectrum(len(lines) + 1)))
+        print("HERE ARE YOUR COLORS! HAPPY?")
+        print(len(colors))
+        for j, line in enumerate(lines):
+            color = list(astoroid.gen_color_gradient((23, 99, 142), (184, 108, 2), len(lines)))
+            modular_porabola = VGroup(color=colors[j+2], stroke_width=3)
             modular_porabola.set_points_as_corners([astoroid.to_xyz(l) for l in line])
             self.add(modular_porabola)
         # end stuff
@@ -76,8 +91,8 @@ class EC(Scene):
         self.add(Circle(radius=0.6, color=BLUE, fill_opacity=1).move_to(plane.coords_to_point(5, 21)))
 
 if __name__ == "__main__":
-    config.frame_height = extent
-    config.frame_width = extent
+    config.frame_height = extent + 1
+    config.frame_width = extent + 1
     #config.quality = "low_quality"
     scene = EC()
     scene.render()
