@@ -10,6 +10,7 @@ extent = 12
 config.frame_height = extent
 config.frame_width = extent
 
+
 class FFEC:
     def __init__(self, A, B, P):
         self.A = A
@@ -21,7 +22,11 @@ class FFEC:
         self.parametric = lambda x: math.sqrt(self.rhs(x))
 
     def get_tex(self):
-        return r"y^2 = x^3 + %dx + %d, \quad x,y\in\mathbb{Z}_{%d}" % (self.A, self.B, self.P)
+        return r"y^2 = x^3 + %dx + %d, \quad x,y\in\mathbb{Z}_{%d}" % (
+            self.A,
+            self.B,
+            self.P,
+        )
 
     def get_root(self):
         if self.A == 2 and self.B == 2:
@@ -53,12 +58,10 @@ class FFECPlotter(Scene):
         ]
         lines = astoroid.get_lines(modular_points, self.P)
         colors = list(astoroid.gen_color_gradient((255, 0, 0), (0, 0, 255), len(lines)))
-        #origin = plane.coords_to_point(0, 0, 0)
+        # origin = plane.coords_to_point(0, 0, 0)
         for j, line in enumerate(lines):
             mline = VGroup(color=colors[j], stroke_width=3)
-            mline.set_points_as_corners(
-                [astoroid.to_manim_point(*l) for l in line]
-            )
+            mline.set_points_as_corners([astoroid.to_manim_point(*l) for l in line])
             self.add(mline)
 
         tex = MathTex(self.curve.get_tex()).to_edge(DOWN)
