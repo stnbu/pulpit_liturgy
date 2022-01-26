@@ -7,6 +7,8 @@ import astoroid
 
 extent = 12
 
+config.frame_height = extent
+config.frame_width = extent
 
 class FFEC:
     def __init__(self, A, B, P):
@@ -37,8 +39,7 @@ class FFECPlotter(Scene):
         plane = Axes(
             x_range=[self.curve.get_root(), extent, 1],
             y_range=[-extent, extent, 1],
-            # x_length=extent + 1,
-            # y_length=extent + 1,
+            tips=False,
             axis_config={"include_numbers": True},
         )
         self.add(plane)
@@ -52,15 +53,13 @@ class FFECPlotter(Scene):
         ]
         lines = astoroid.get_lines(modular_points, self.P)
         colors = list(astoroid.gen_color_gradient((255, 0, 0), (0, 0, 255), len(lines)))
+        #origin = plane.coords_to_point(0, 0, 0)
         for j, line in enumerate(lines):
-            color = list(
-                astoroid.gen_color_gradient((23, 99, 142), (184, 108, 2), len(lines))
-            )
-            modular_porabola = VGroup(color=colors[j], stroke_width=3)
-            modular_porabola.set_points_as_corners(
+            mline = VGroup(color=colors[j], stroke_width=3)
+            mline.set_points_as_corners(
                 [astoroid.to_manim_point(*l) for l in line]
             )
-            self.add(modular_porabola)
+            self.add(mline)
 
         tex = MathTex(self.curve.get_tex()).to_edge(DOWN)
         self.add(tex)
