@@ -42,7 +42,7 @@ class FFECPlotter(Scene):
 
     def construct(self):
         plane = Axes(
-            x_range=[self.curve.get_root(), extent, 1],
+            x_range=[self.curve.get_root() - 1, extent, 1],
             y_range=[-extent, extent, 1],
             tips=False,
             axis_config={"include_numbers": True},
@@ -58,11 +58,12 @@ class FFECPlotter(Scene):
         ]
         lines = astoroid.get_lines(modular_points, self.P)
         colors = list(astoroid.gen_color_gradient((255, 0, 0), (0, 0, 255), len(lines)))
-        # origin = plane.coords_to_point(0, 0, 0)
+        mlines = VGroup()
         for j, line in enumerate(lines):
             mline = VGroup(color=colors[j], stroke_width=3)
-            mline.set_points_as_corners([astoroid.to_manim_point(*l) for l in line])
-            self.add(mline)
+            mline.set_points_as_corners([plane.coords_to_point(float(l[0]), float(l[1])) for l in line])
+            mlines.add(mline)
+        self.add(mlines)
 
         tex = MathTex(self.curve.get_tex()).to_edge(DOWN)
         self.add(tex)
