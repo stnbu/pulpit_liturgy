@@ -33,7 +33,6 @@ class FFEC:
             return -0.77091
         raise ValueError
 
-
 class FFECPlotter(Scene):
     def __init__(self, A, B, P, *args, **kwargs):
         self.P = Decimal(P)
@@ -57,7 +56,7 @@ class FFECPlotter(Scene):
             for point in points
         ]
         lines = astoroid.get_lines(modular_points, self.P)
-        colors = list(astoroid.gen_color_gradient((255, 0, 0), (0, 0, 255), len(lines)))
+        colors = list(astoroid.gen_color_gradient((0, 0, 255), (255, 0, 0), len(lines)))
         mlines = VGroup()
         for j, line in enumerate(lines):
             mline = VGroup(color=colors[j], stroke_width=3)
