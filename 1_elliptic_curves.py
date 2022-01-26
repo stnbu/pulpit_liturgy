@@ -7,8 +7,10 @@ import astoroid
 
 extent = 12
 
-config.frame_height = extent
-config.frame_width = extent
+config.frame_height = extent * 3
+config.frame_width = extent * 3
+config.pixel_width = 1024
+config.pixel_height = 1024
 
 
 class FFEC:
@@ -41,7 +43,7 @@ class FFECPlotter(Scene):
 
     def construct(self):
         plane = Axes(
-            x_range=[self.curve.get_root() - 1, extent, 1],
+            #x_range=[self.curve.get_root() - 1, extent, 1],
             y_range=[-extent, extent, 1],
             tips=False,
             axis_config={"include_numbers": True},
