@@ -16,10 +16,10 @@ class FFEC:
         self.lhs = lambda y: y ** 2
         self.rhs = lambda x: x ** 3 + self.A * x + self.B
         self.implicit = lambda x, y: self.rhs(x) - self.lhs(y)
-        self.parametric = lambda x: math.sqrt((x) ** 3 + (self.A * (x)) + self.B)
+        self.parametric = lambda x: math.sqrt(self.rhs(x))
 
     def get_tex(self):
-        return r"y^2 = x^3 + %dx + %d over \mathbb{Z}_%d" % (self.A, self.B, self.P)
+        return r"y^2 = x^3 + %dx + %d, \quad x,y\in\mathbb{Z}_{%d}" % (self.A, self.B, self.P)
 
     def get_root(self):
         if self.A == 2 and self.B == 2:
@@ -30,21 +30,22 @@ class FFEC:
 class FFECPlotter(Scene):
     def __init__(self, A, B, P, *args, **kwargs):
         self.P = Decimal(P)
-        self.ec = FFEC(A, B, P)
+        self.curve = FFEC(A, B, P)
         Scene.__init__(self, *args, **kwargs)
 
     def construct(self):
-        plane = NumberPlane(
-            [-extent, extent, 1],
-            [-extent, extent, 1],
-            x_length=extent + 1,
-            y_length=extent + 1,
+        plane = Axes(
+            x_range=[self.curve.get_root(), extent, 1],
+            y_range=[-extent, extent, 1],
+            # x_length=extent + 1,
+            # y_length=extent + 1,
+            axis_config={"include_numbers": True},
         )
         self.add(plane)
 
         points = []
-        for i, n in enumerate(astoroid.fdrange(self.ec.get_root(), 50, 0.01)):
-            points.append((n, self.ec.parametric(n)))
+        for i, n in enumerate(astoroid.fdrange(self.curve.get_root(), 50, 0.01)):
+            points.append((n, self.curve.parametric(n)))
         modular_points = [
             [astoroid.ModularNumber(Decimal(n), self.P) for n in point]
             for point in points
@@ -60,6 +61,9 @@ class FFECPlotter(Scene):
                 [astoroid.to_manim_point(*l) for l in line]
             )
             self.add(modular_porabola)
+
+        tex = MathTex(self.curve.get_tex()).to_edge(DOWN)
+        self.add(tex)
 
 
 if __name__ == "__main__":
