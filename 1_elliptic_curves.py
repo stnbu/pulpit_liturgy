@@ -21,6 +21,11 @@ class FFEC:
     def get_tex(self):
         return r"y^2 = x^3 + %dx + %d over \mathbb{Z}_%d" % (self.A, self.B, self.P)
 
+    def get_root(self):
+        if self.A == 2 and self.B == 2:
+            return -0.77091
+        raise ValueError
+
 
 class FFECPlotter(Scene):
     def __init__(self, A, B, P, *args, **kwargs):
@@ -38,7 +43,7 @@ class FFECPlotter(Scene):
         self.add(plane)
 
         points = []
-        for i, n in enumerate(astoroid.fdrange(-0.77, 50, 0.01)):
+        for i, n in enumerate(astoroid.fdrange(self.ec.get_root(), 50, 0.01)):
             points.append((n, self.ec.parametric(n)))
         modular_points = [
             [astoroid.ModularNumber(Decimal(n), self.P) for n in point]
